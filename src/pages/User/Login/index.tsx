@@ -1,4 +1,5 @@
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+// import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import request from '@/utils/request';
 import {
   AlipayCircleOutlined,
   LockOutlined,
@@ -14,10 +15,12 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from '@umijs/max';
+import { FormattedMessage, Helmet, SelectLang, useIntl, useModel } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import Settings from '../../../../config/defaultSettings';
+
+console.log('request', request);
 
 const ActionIcons = () => {
   const langClassName = useEmotionCss(({ token }) => {
@@ -115,8 +118,16 @@ const Login: React.FC = () => {
     try {
       // 登录
       // const urlParams = new URL(window.location.href).searchParams;
-      history.push('/');
-      // const msg = await login({ ...values, type });
+      // history.push('/');
+      console.log('login', values, type);
+      if (values.password && values.username) {
+        console.log(111);
+        const msg = await request.login({
+          password: values.password,
+          username: values.username,
+          type,
+        });
+      }
       // if (msg.status === 'ok') {
       //   const defaultLoginSuccessMessage = intl.formatMessage({
       //     id: 'pages.login.success',

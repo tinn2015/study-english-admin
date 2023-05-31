@@ -5,6 +5,6 @@
 import * as lesson from './lesson';
 import * as login from './login';
 export default {
-  lesson,
-  login,
+  ...lesson,
+  ...login,
 };
