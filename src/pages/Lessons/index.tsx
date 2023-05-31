@@ -1,6 +1,7 @@
 import type { ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import React from 'react';
+import { request } from 'umi';
 
 type RowItem = {
   id: number;
@@ -67,7 +68,19 @@ const defaultData: RowItem[] = [
 const Lesson: React.FC = () => {
   return (
     <PageContainer>
-      <ProTable<RowItem> columns={columns} defaultData={defaultData}></ProTable>
+      <ProTable<RowItem>
+        columns={columns}
+        defaultData={defaultData}
+        request={async () => {
+          const list = await request('http://www.baidu.com', {
+            params: {
+              name: 11,
+            },
+            method: 'POST',
+          });
+          return {};
+        }}
+      ></ProTable>
     </PageContainer>
   );
 };
