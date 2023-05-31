@@ -29,6 +29,22 @@ export default [
     component: './Welcome',
   },
   {
+    path: '/lessons',
+    name: '课程管理',
+    icon: 'crown',
+    routes: [
+      {
+        path: '/lessons',
+        redirect: '/lessons/list',
+      },
+      {
+        path: '/lessons/list',
+        name: '课程列表',
+        component: './Lessons',
+      },
+    ],
+  },
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
