@@ -1,7 +1,7 @@
+import request from '@/utils/request';
 import type { ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import React from 'react';
-import { request } from 'umi';
+import React, { useEffect, useState } from 'react';
 
 type RowItem = {
   id: number;
@@ -65,22 +65,24 @@ const defaultData: RowItem[] = [
   },
 ];
 
+const getList = async (params: { page: number; size: number }) => {
+  return request.getLessonList(params);
+};
+
 const Lesson: React.FC = () => {
+  const [list, updateList] = useState<RowItem[]>([]);
+  const [page, updatePage] = useState<number>(0);
+
+  useEffect(() => {
+    request.getLessonList({ page, size: 10 }).then((res) => {
+      console.log('getLessonList', res);
+      updateList(res.lessons);
+    });
+  }, [page]);
+
   return (
     <PageContainer>
-      <ProTable<RowItem>
-        columns={columns}
-        defaultData={defaultData}
-        request={async () => {
-          const list = await request('http://www.baidu.com', {
-            params: {
-              name: 11,
-            },
-            method: 'POST',
-          });
-          return {};
-        }}
-      ></ProTable>
+      <ProTable<RowItem> columns={columns} dataSource={list}></ProTable>
     </PageContainer>
   );
 };
