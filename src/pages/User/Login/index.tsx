@@ -15,7 +15,7 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { FormattedMessage, Helmet, SelectLang, useIntl, useModel } from '@umijs/max';
+import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import Settings from '../../../../config/defaultSettings';
@@ -117,8 +117,6 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      // const urlParams = new URL(window.location.href).searchParams;
-      // history.push('/');
       console.log('login', values, type);
       if (values.password && values.username) {
         console.log(111);
@@ -127,6 +125,12 @@ const Login: React.FC = () => {
           username: values.username,
           type,
         });
+        if (msg.result === '0') {
+          window.localStorage.setItem('authorization', msg.authorization);
+          message.success('登录成功');
+          const urlParams = new URL(window.location.href).searchParams;
+          history.push('/');
+        }
       }
       // if (msg.status === 'ok') {
       //   const defaultLoginSuccessMessage = intl.formatMessage({

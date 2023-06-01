@@ -84,7 +84,7 @@ export default defineConfig({
    */
   title: '学英语',
   layout: {
-    locale: true,
+    locale: false,
     ...defaultSettings,
   },
   /**
