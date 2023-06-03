@@ -26,7 +26,7 @@ interface ResponseStructure {
  */
 export const errorConfig: RequestConfig = {
   headers: {
-    authorization: window.localStorage.getItem('authorization'),
+    Authorization: window.localStorage.getItem('authorization'),
   },
   // 错误处理： umi@3 的错误处理方案。
   errorConfig: {
@@ -93,8 +93,13 @@ export const errorConfig: RequestConfig = {
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理。
       console.log('[请求拦截]', config);
-      if (!config?.headers?.authorization) {
+      const authorization = window.localStorage.getItem('authorization');
+      if (!authorization) {
         history.push('/user/login');
+      } else {
+        if (config.headers) {
+          config.headers.Authorization = authorization;
+        }
       }
       const url = config?.url;
       return { ...config, url };

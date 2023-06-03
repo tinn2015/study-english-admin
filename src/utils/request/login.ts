@@ -1,7 +1,8 @@
 import { request } from '@umijs/max';
 import * as CryptoJS from 'crypto-js';
 
-const BaseUrl = 'https://api.itso123.com';
+const isDev = process.env.NODE_ENV === 'development';
+const BaseUrl = isDev ? '' : 'https://api.itso123.com';
 
 /** 发送验证码 POST /api/login/captcha */
 export function login(
@@ -17,7 +18,7 @@ export function login(
   console.log('user pwd', params, CryptoJS);
   const user = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(params.username));
   const pwd = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(params.password));
-  return request<API.FakeCaptcha>('/v1/user/manager/login', {
+  return request<API.FakeCaptcha>(BaseUrl + '/v1/user/manager/login', {
     method: 'POST',
     data: {
       user,
