@@ -111,7 +111,13 @@ export const errorConfig: RequestConfig = {
     (response) => {
       // 拦截响应数据，进行个性化处理
       const { data } = response as unknown as ResponseStructure;
-
+      console.log('responseInterceptors', response);
+      if (data.result === '403') {
+        message.error(data.reason);
+        window.localStorage.removeItem('authorization');
+        history.push('/user/login');
+        return;
+      }
       if (data?.success === false) {
         message.error('请求失败！');
       }
