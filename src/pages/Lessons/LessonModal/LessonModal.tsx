@@ -1,5 +1,6 @@
+import { addLesson } from '@/utils/request/lesson';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Modal, Select, Space, Upload } from 'antd';
+import { Button, Form, Input, message, Modal, Select, Space, Upload } from 'antd';
 import React, { useState } from 'react';
 
 const { TextArea } = Input;
@@ -17,27 +18,71 @@ const normFile = (e: any) => {
   return e?.fileList;
 };
 
+const isDev = process.env.NODE_ENV === 'development';
+const BaseUrl = isDev ? '' : 'https://api.itso123.com';
+
+const Authorization = window.localStorage.getItem('authorization') || '';
+
 const LessonModal: React.FC<Props> = ({ visible, setOpen }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [fileList, setFileList] = useState([]);
   const [form] = Form.useForm();
   console.log('lessonItem', visible);
 
   const handleOk = () => {
     console.log('form', form.submit());
     setConfirmLoading(true);
-    setTimeout(() => {
-      setOpen(false);
-      setConfirmLoading(false);
-    }, 2000);
+    // setTimeout(() => {
+    //   setOpen(false);
+    //   setConfirmLoading(false);
+    // }, 2000);
   };
 
   const handleCancel = () => {
     console.log('Clicked cancel button');
     setOpen(false);
+    setFileList([]);
+    form.resetFields();
   };
 
   const onFinish = (values: any) => {
     console.log('onfinish', values);
+    if (values.img[0]) {
+      values.img = values.img[0].response.url;
+    }
+    addLesson(values).then(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+      form.resetFields();
+      message.success('添加课程成功');
+    });
+  };
+
+  // const handleBeforeUpload = (file, fileList) => {
+  //   if (fileList.length === 0) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // };
+
+  const handleOnChange = (info) => {
+    let newFileList = [...info.fileList];
+
+    // 限制上传一个文件
+    if (newFileList.length > 1) {
+      newFileList = newFileList.slice(-1);
+    }
+
+    // 如果上传的文件有返回url则覆盖原来上传的文件
+    newFileList = newFileList.map((file) => {
+      if (file.response && file.response.url) {
+        file.url = file.response.url;
+      }
+      return file;
+    });
+    console.log('newFileList', JSON.parse(JSON.stringify(newFileList)));
+    setFileList(newFileList);
   };
 
   return (
@@ -85,11 +130,21 @@ const LessonModal: React.FC<Props> = ({ visible, setOpen }) => {
             rules={[{ required: true, message: '请选择课程级别' }]}
           >
             <Select>
-              <Select.Option value="demo">Demo</Select.Option>
+              <Select.Option value="初级">初级</Select.Option>
+              <Select.Option value="中级">中级</Select.Option>
+              <Select.Option value="高级">高级</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item label="封面" name="img" valuePropName="fileList" getValueFromEvent={normFile}>
-            <Upload action="/upload.do" listType="picture-card">
+          <Form.Item label="封面" name="img" getValueFromEvent={normFile}>
+            <Upload
+              action={`${BaseUrl}/v1/admin/image/upload`}
+              name={'recfile'}
+              headers={{ Authorization: Authorization }}
+              onChange={handleOnChange}
+              fileList={fileList}
+              defaultFileList={[]}
+              listType="picture-card"
+            >
               <div>
                 <PlusOutlined />
                 <div style={{ marginTop: 8 }}>Upload</div>
@@ -98,14 +153,15 @@ const LessonModal: React.FC<Props> = ({ visible, setOpen }) => {
           </Form.Item>
           <div style={{ fontSize: '14px', marginBottom: '20px', fontWeight: 600 }}>章节</div>
           <Form.Item>
-            <Form.List name="section">
+            <Form.List name="sections">
               {(fields, { add, remove }) => (
                 <>
-                  {fields.map((field) => (
-                    <Space key={field.key} align="baseline">
+                  {fields.map((field, index) => (
+                    <Space key={field.key + 'section'} align="baseline">
                       <Form.Item
                         {...field}
-                        label="标题："
+                        label={`标题：`}
+                        key={`${field}title`}
                         name={[field.name, 'title']}
                         rules={[{ required: true, message: '请输入章节名称' }]}
                       >
@@ -113,6 +169,7 @@ const LessonModal: React.FC<Props> = ({ visible, setOpen }) => {
                       </Form.Item>
                       <Form.Item
                         {...field}
+                        key={`${field}descript`}
                         label="描述: "
                         name={[field.name, 'descript']}
                         rules={[{ required: true, message: '请输入章节描述' }]}

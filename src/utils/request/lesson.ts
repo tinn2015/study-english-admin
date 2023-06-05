@@ -21,3 +21,32 @@ export function getLessonList(
     ...(options || {}),
   });
 }
+
+/**
+ * 添加课程
+ * @param params
+ * @param options
+ * @returns
+ */
+export function addLesson(
+  params: {
+    title: string;
+    level: string;
+    class: string;
+    img: string;
+    descript: string;
+    sections: {
+      title: string;
+      descript: string;
+    }[];
+  },
+  options?: { [key: string]: any },
+) {
+  return request<API.FakeCaptcha>(BaseUrl + '/v1/admin/lesson/list', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
