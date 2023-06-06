@@ -37,11 +37,15 @@ const Lesson: React.FC = () => {
   });
   const actionRef = useRef<ActionType>();
 
-  useEffect(() => {
+  const updateLessonList = () => {
     request.getLessonList({ page, size: 10 }).then((res) => {
       console.log('getLessonList', res);
       updateList(res.lessons);
     });
+  };
+
+  useEffect(() => {
+    updateLessonList();
   }, [page]);
 
   const deleteLesson = (lesson: RowItem) => {
@@ -204,7 +208,11 @@ const Lesson: React.FC = () => {
           ]}
         ></ProTable>
       )}
-      <LessonModal visible={lessonModalVisible} setOpen={setLessonModalVisible}></LessonModal>
+      <LessonModal
+        visible={lessonModalVisible}
+        setOpen={setLessonModalVisible}
+        update={updateLessonList}
+      ></LessonModal>
       {currentLesson.sections.length && (
         <SectionModal
           visible={sectionModalVisible}

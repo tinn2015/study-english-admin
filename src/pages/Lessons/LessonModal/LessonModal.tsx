@@ -9,6 +9,7 @@ interface Props {
   visible: boolean;
   // lesson: LessonItem
   setOpen: (flag: boolean) => void;
+  update: () => void;
 }
 
 const normFile = (e: any) => {
@@ -23,7 +24,7 @@ const BaseUrl = isDev ? '' : 'https://api.itso123.com';
 
 const Authorization = window.localStorage.getItem('authorization') || '';
 
-const LessonModal: React.FC<Props> = ({ visible, setOpen }) => {
+const LessonModal: React.FC<Props> = ({ visible, setOpen, update }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [form] = Form.useForm();
@@ -55,6 +56,7 @@ const LessonModal: React.FC<Props> = ({ visible, setOpen }) => {
       setConfirmLoading(false);
       form.resetFields();
       message.success('添加课程成功');
+      update();
     });
   };
 
