@@ -42,11 +42,44 @@ export function addLesson(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.FakeCaptcha>(BaseUrl + '/v1/admin/lesson/list', {
+  return request<API.FakeCaptcha>(BaseUrl + '/v1/admin/lesson/add', {
     method: 'POST',
     data: {
       ...params,
     },
     ...(options || {}),
+  });
+}
+
+/**
+ * 获取课程详情
+ * @param id
+ * @returns
+ */
+export function getLessonDetail(id: number) {
+  return request(`${BaseUrl}/v1/admin/lesson/detail/${id}`, {
+    method: 'POST',
+    data: {
+      id,
+    },
+  });
+}
+
+/**
+ * 添加、修改章节
+ * @param id
+ * @returns
+ */
+export function sectionAdd(data: {
+  lessonId: number;
+  sections: {
+    id: string;
+    title: string;
+    contexts: string;
+  }[];
+}) {
+  return request(`${BaseUrl}/v1/admin/section/add`, {
+    method: 'POST',
+    data,
   });
 }

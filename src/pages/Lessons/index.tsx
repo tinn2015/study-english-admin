@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import { getLessonDetail } from '@/utils/request/lesson';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
@@ -24,6 +25,16 @@ const Lesson: React.FC = () => {
   const [page, updatePage] = useState<number>(0);
   const [lessonModalVisible, setLessonModalVisible] = useState<boolean>(false);
   const [sectionModalVisible, setSectionModalVisible] = useState<boolean>(false);
+  const [currentSections, setCurrentSections] = useState<{ title: string; descript: string }[]>([]);
+  const [currentLesson, setCurrentLesson] = useState<{
+    id: number;
+    lessonId: number;
+    sections: any[];
+  }>({
+    id: 0,
+    lessonId: 0,
+    sections: [],
+  });
   const actionRef = useRef<ActionType>();
 
   useEffect(() => {
@@ -107,7 +118,12 @@ const Lesson: React.FC = () => {
         <a key="editable">编辑</a>,
         <a
           onClick={() => {
-            setSectionModalVisible(true);
+            getLessonDetail(record.lessonId).then((res) => {
+              // setCurrentSections([...res.sections])
+              setCurrentLesson(res);
+              console.log('setCurrentSections', currentSections);
+              setSectionModalVisible(true);
+            });
           }}
           key="view"
         >
@@ -189,11 +205,14 @@ const Lesson: React.FC = () => {
         ></ProTable>
       )}
       <LessonModal visible={lessonModalVisible} setOpen={setLessonModalVisible}></LessonModal>
-      <SectionModal
-        visible={sectionModalVisible}
-        setOpen={setSectionModalVisible}
-        sections={sections}
-      ></SectionModal>
+      {currentLesson.sections.length && (
+        <SectionModal
+          visible={sectionModalVisible}
+          setOpen={setSectionModalVisible}
+          // sections={currentSections}
+          lesson={currentLesson}
+        ></SectionModal>
+      )}
     </PageContainer>
   );
 };

@@ -1,5 +1,6 @@
+import { sectionAdd } from '@/utils/request/lesson';
 import { Card, Divider, Input, Modal, Tabs } from 'antd';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 const { TextArea } = Input;
 
@@ -7,22 +8,40 @@ interface Props {
   visible: boolean;
   // lesson: LessonItem
   setOpen: (flag: boolean) => void;
-  sections: any[];
+  // sections: any[];
+  lesson: {
+    id: number;
+    lessonId: number;
+    sections: any[];
+  };
 }
 
-const SectionModal: React.FC<Props> = ({ visible, setOpen, sections = [] }) => {
+const SectionModal: React.FC<Props> = ({ visible, setOpen, lesson }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState(sections[0]?.id || 0);
-  const [items, setItems] = useState(sections);
+  const [activeTab, setActiveTab] = useState(lesson.sections[0]?.id || 0);
+  const [items, setItems] = useState(lesson.sections);
   const { TextArea } = Input;
-  console.log('SectionModal sections', sections);
+  console.log('SectionModal sections', items);
+
+  useMemo(() => {
+    setItems(lesson.sections);
+    setActiveTab(lesson.sections[0]?.id);
+  }, [lesson]);
 
   const handleOk = () => {
+    console.log('ok', lesson);
     setConfirmLoading(true);
-    setTimeout(() => {
+    sectionAdd({
+      lessonId: lesson.lessonId,
+      sections: lesson.sections,
+    }).then(() => {
       setOpen(false);
       setConfirmLoading(false);
-    }, 2000);
+    });
+    // setTimeout(() => {
+    //   setOpen(false);
+    //   setConfirmLoading(false);
+    // }, 2000);
   };
 
   const handleCancel = () => {
@@ -36,24 +55,28 @@ const SectionModal: React.FC<Props> = ({ visible, setOpen, sections = [] }) => {
 
   const sentenceChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const index = items.findIndex((i) => i.id === activeTab);
-    items[index].sentence = event.target.value;
-    setItems([...items]);
+    if (index > -1) {
+      items[index].contexts = event.target.value;
+      setItems([...items]);
+    }
   };
 
   const inputBlock = (section: any) => {
     console.log('inputBlock', section);
     return (
       <div>
-        <TextArea rows={10} onChange={sentenceChange} value={section.sentence} />
+        <TextArea rows={10} onChange={sentenceChange} value={section.contexts} />
       </div>
     );
   };
 
   const renderPreview = () => {
     const previewItem = items.find((i) => i.id === activeTab);
-    const { sentence } = previewItem;
-    const splits = sentence.split('#');
-    return splits.map((i, index) => <p key={`${index}`}>{i}</p>);
+    if (previewItem) {
+      const { contexts } = previewItem;
+      const splits = contexts.split('#');
+      return splits.map((i, index) => <p key={`${index}`}>{i}</p>);
+    }
   };
 
   return (
@@ -69,14 +92,15 @@ const SectionModal: React.FC<Props> = ({ visible, setOpen, sections = [] }) => {
         <div>
           <Tabs
             tabPosition="left"
+            activeKey={activeTab}
             onTabClick={(id) => {
               setActiveTab(id);
               console.log('onTabClic', id);
             }}
             items={items.map((section, i) => {
-              const { id } = section;
+              const { id, title } = section;
               return {
-                label: `Tab ${id}`,
+                label: `${title}`,
                 key: id,
                 children: inputBlock(section),
               };
