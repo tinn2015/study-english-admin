@@ -1,9 +1,9 @@
 import request from '@/utils/request';
-import { getLessonDetail } from '@/utils/request/lesson';
+import { genTtsCn, getLessonDetail, updateLessonStatus } from '@/utils/request/lesson';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, Popconfirm } from 'antd';
+import { Button, message, Popconfirm } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import LessonModal from './LessonModal/LessonModal';
 import SectionModal from './SectionModal/SectionModal';
@@ -38,7 +38,7 @@ const Lesson: React.FC = () => {
   const actionRef = useRef<ActionType>();
 
   const updateLessonList = () => {
-    request.getLessonList({ page, size: 10 }).then((res) => {
+    request.getLessonList({ page, size: 40 }).then((res) => {
       console.log('getLessonList', res);
       updateList(res.lessons);
     });
@@ -51,6 +51,8 @@ const Lesson: React.FC = () => {
   const deleteLesson = (lesson: RowItem) => {
     console.log('deleteLesson', lesson);
   };
+
+  const lessonStatus = [{ label: '未启用' }, { label: '启用' }, { label: '禁用' }];
 
   const columns: ProColumns<RowItem>[] = [
     {
@@ -133,6 +135,33 @@ const Lesson: React.FC = () => {
         >
           章节管理
         </a>,
+        <Button
+          type="primary"
+          size="small"
+          disabled={!record.inUse}
+          onClick={() => {
+            const inUse = record.inUse === 1 ? 2 : 1;
+            updateLessonStatus({ id: record.lessonId, inUse }).then(() => {
+              message.success('课程状态更新成功');
+              updateLessonList();
+            });
+          }}
+          key="status"
+        >
+          {lessonStatus[record.inUse].label}
+        </Button>,
+        <Button
+          size="small"
+          key="tts"
+          onClick={() => {
+            genTtsCn(record.lessonId).then(() => {
+              message.success('tts、翻译已触发');
+              // updateLessonList()
+            });
+          }}
+        >
+          tts/翻译
+        </Button>,
         <Popconfirm
           title="Delete the task"
           description="Are you sure to delete this task?"
@@ -163,32 +192,9 @@ const Lesson: React.FC = () => {
     },
   ];
 
-  const sections = [
-    {
-      title: '学英语1',
-      sentence: 'aaa1#bbb1#ccc1#ddd1#',
-      id: 1,
-    },
-    {
-      title: '学英语2',
-      sentence: 'aaa2#bb2b#ccc2#ddd2#',
-      id: 2,
-    },
-    {
-      title: '学英语3',
-      sentence: 'aaa3#bbb3#ccc3#ddd3#',
-      id: 3,
-    },
-    {
-      title: '学英语4',
-      sentence: 'aaa4#bbb4#ccc4#ddd4#',
-      id: 4,
-    },
-  ];
-
   return (
     <PageContainer>
-      {list.length && (
+      {
         <ProTable<RowItem>
           rowKey="lessonId"
           columns={columns}
@@ -207,20 +213,20 @@ const Lesson: React.FC = () => {
             </Button>,
           ]}
         ></ProTable>
-      )}
+      }
       <LessonModal
         visible={lessonModalVisible}
         setOpen={setLessonModalVisible}
         update={updateLessonList}
       ></LessonModal>
-      {currentLesson.sections.length && (
+      {
         <SectionModal
           visible={sectionModalVisible}
           setOpen={setSectionModalVisible}
           // sections={currentSections}
           lesson={currentLesson}
         ></SectionModal>
-      )}
+      }
     </PageContainer>
   );
 };

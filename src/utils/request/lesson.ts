@@ -83,3 +83,29 @@ export function sectionAdd(data: {
     data,
   });
 }
+
+/**
+ * 课程状态更新
+ * @param id
+ * @returns
+ */
+export function updateLessonStatus(data: { id: number; inUse: number }) {
+  return request(`${BaseUrl}/v1/admin/lesson/state/update`, {
+    method: 'POST',
+    data,
+  });
+}
+
+/**
+ * 生成tts和翻译
+ * @param id
+ * @returns
+ */
+export function genTtsCn(id: number) {
+  return request(`${BaseUrl}/v1/admin/lesson/ttscn/generate/${id}`, {
+    method: 'POST',
+    data: {
+      id,
+    },
+  });
+}
