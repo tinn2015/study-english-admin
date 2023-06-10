@@ -31,6 +31,11 @@ const SectionModal: React.FC<Props> = ({ visible, setOpen, lesson }) => {
   const handleOk = () => {
     console.log('ok', lesson);
     setConfirmLoading(true);
+    lesson.sections.forEach((section) => {
+      if (section.contexts) {
+        section.contexts = section.contexts.replace(/\n|\r\n/g, '#');
+      }
+    });
     sectionAdd({
       lessonId: lesson.lessonId,
       sections: lesson.sections,
@@ -74,7 +79,7 @@ const SectionModal: React.FC<Props> = ({ visible, setOpen, lesson }) => {
     const previewItem = items.find((i) => i.id === activeTab);
     if (previewItem) {
       const { contexts } = previewItem;
-      const splits = contexts.split('#');
+      const splits = contexts.replace(/\n|\r\n/g, '#').split('#');
       return splits.map((i, index) => <p key={`${index}`}>{i}</p>);
     }
   };
