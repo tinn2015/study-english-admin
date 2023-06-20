@@ -52,7 +52,7 @@ const Lesson: React.FC = () => {
     console.log('deleteLesson', lesson);
   };
 
-  const lessonStatus = [{ label: '未启用' }, { label: '启用' }, { label: '禁用' }];
+  const lessonStatus = [{ label: '未启用' }, { label: '禁用' }, { label: '启用' }];
 
   const columns: ProColumns<RowItem>[] = [
     {
