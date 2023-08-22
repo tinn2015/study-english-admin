@@ -1,7 +1,7 @@
 import { request } from '@umijs/max';
 
 const isDev = process.env.NODE_ENV === 'development';
-const BaseUrl = isDev ? '' : 'https://api.itso123.com';
+const BaseUrl = isDev ? '' : '';
 
 console.log('BaseUrl', BaseUrl);
 

@@ -2,7 +2,7 @@ import { request } from '@umijs/max';
 import * as CryptoJS from 'crypto-js';
 
 const isDev = process.env.NODE_ENV === 'development';
-const BaseUrl = isDev ? '' : 'https://api.itso123.com';
+const BaseUrl = isDev ? '' : '';
 
 /** 发送验证码 POST /api/login/captcha */
 export function login(
