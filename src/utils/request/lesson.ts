@@ -1,7 +1,7 @@
 import { request } from '@umijs/max';
 
 const isDev = process.env.NODE_ENV === 'development';
-const BaseUrl = isDev ? '' : '';
+const BaseUrl = isDev ? '/v2' : '/v1';
 
 console.log('BaseUrl', BaseUrl);
 
@@ -13,7 +13,7 @@ export function getLessonList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.FakeCaptcha>(BaseUrl + '/v1/admin/lesson/list', {
+  return request<API.FakeCaptcha>(BaseUrl + '/admin/lesson/list', {
     method: 'POST',
     data: {
       ...params,

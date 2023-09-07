@@ -7,6 +7,7 @@ import { Button, message, Popconfirm } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import LessonModal from './LessonModal/LessonModal';
 import SectionModal from './SectionModal/SectionModal';
+import TranslateModal from './TranslateModal/TranslateModal';
 
 type RowItem = {
   id: number;
@@ -25,6 +26,7 @@ const Lesson: React.FC = () => {
   const [page, updatePage] = useState<number>(0);
   const [lessonModalVisible, setLessonModalVisible] = useState<boolean>(false);
   const [sectionModalVisible, setSectionModalVisible] = useState<boolean>(false);
+  const [translationModalVisible, setTranslationModalVisible] = useState<boolean>(false);
   const [currentSections, setCurrentSections] = useState<{ title: string; descript: string }[]>([]);
   const [currentLesson, setCurrentLesson] = useState<{
     id: number;
@@ -135,6 +137,19 @@ const Lesson: React.FC = () => {
         >
           章节管理
         </a>,
+        <a
+          onClick={() => {
+            getLessonDetail(record.lessonId).then((res) => {
+              // setCurrentSections([...res.sections])
+              setCurrentLesson(res);
+              console.log('setCurrentSections', currentSections);
+              setTranslationModalVisible(true);
+            });
+          }}
+          key="translate"
+        >
+          译文管理
+        </a>,
         <Button
           type="primary"
           size="small"
@@ -226,6 +241,14 @@ const Lesson: React.FC = () => {
           // sections={currentSections}
           lesson={currentLesson}
         ></SectionModal>
+      }
+      {
+        <TranslateModal
+          visible={translationModalVisible}
+          setOpen={setTranslationModalVisible}
+          // sections={currentSections}
+          lesson={currentLesson}
+        ></TranslateModal>
       }
     </PageContainer>
   );
