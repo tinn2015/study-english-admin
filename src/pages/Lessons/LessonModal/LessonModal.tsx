@@ -20,7 +20,7 @@ const normFile = (e: any) => {
 };
 
 const isDev = process.env.NODE_ENV === 'development';
-const BaseUrl = isDev ? '' : 'https://api.itso123.com';
+const BaseUrl = isDev ? '/v2' : '/v1';
 
 const Authorization = window.localStorage.getItem('authorization') || '';
 

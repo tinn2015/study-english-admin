@@ -15,7 +15,7 @@ export function login(
   },
   options?: { [key: string]: any },
 ) {
-  console.log('user pwd', params, CryptoJS);
+  console.log('==user pwd==', params, CryptoJS);
   const user = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(params.username));
   const pwd = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(params.password));
   return request<API.FakeCaptcha>(BaseUrl + '/user/manager/login', {
