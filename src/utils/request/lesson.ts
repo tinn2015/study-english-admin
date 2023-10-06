@@ -42,7 +42,7 @@ export function addLesson(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.FakeCaptcha>(BaseUrl + '/v1/admin/lesson/add', {
+  return request<API.FakeCaptcha>(BaseUrl + '/admin/lesson/add', {
     method: 'POST',
     data: {
       ...params,
@@ -57,7 +57,7 @@ export function addLesson(
  * @returns
  */
 export function getLessonDetail(id: number) {
-  return request(`${BaseUrl}/v1/admin/lesson/detail/${id}`, {
+  return request(`${BaseUrl}/admin/lesson/detail/${id}`, {
     method: 'POST',
     data: {
       id,
@@ -78,7 +78,7 @@ export function sectionAdd(data: {
     contexts: string;
   }[];
 }) {
-  return request(`${BaseUrl}/v1/admin/section/add`, {
+  return request(`${BaseUrl}/admin/section/add`, {
     method: 'POST',
     data,
   });
@@ -90,7 +90,7 @@ export function sectionAdd(data: {
  * @returns
  */
 export function updateLessonStatus(data: { id: number; inUse: number }) {
-  return request(`${BaseUrl}/v1/admin/lesson/state/update`, {
+  return request(`${BaseUrl}/admin/lesson/state/update`, {
     method: 'POST',
     data,
   });
@@ -102,7 +102,7 @@ export function updateLessonStatus(data: { id: number; inUse: number }) {
  * @returns
  */
 export function genTtsCn(id: number) {
-  return request(`${BaseUrl}/v1/admin/lesson/ttscn/generate/${id}`, {
+  return request(`${BaseUrl}/admin/lesson/ttscn/generate/${id}`, {
     method: 'POST',
     data: {
       id,

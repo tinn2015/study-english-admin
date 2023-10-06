@@ -139,7 +139,7 @@ const LessonModal: React.FC<Props> = ({ visible, setOpen, update }) => {
           </Form.Item>
           <Form.Item label="封面" name="img" getValueFromEvent={normFile}>
             <Upload
-              action={`${BaseUrl}/v1/admin/image/upload`}
+              action={`${BaseUrl}/admin/image/upload`}
               name={'recfile'}
               headers={{ Authorization: Authorization }}
               onChange={handleOnChange}
