@@ -1,7 +1,5 @@
 import { request } from '@umijs/max';
-
-const isDev = process.env.APP_ENV === 'development';
-const BaseUrl = isDev ? 'http://devapi.itso123.com:8091/v1' : '/v1';
+import { BaseUrl } from './index';
 
 console.log('process.env.APP_ENV', process.env.APP_ENV);
 console.log('BaseUrl', BaseUrl);
@@ -36,6 +34,8 @@ export function addLesson(
     class: string;
     img: string;
     descript: string;
+    mode: number;
+    robotUrl?: string;
     sections: {
       title: string;
       descript: string;

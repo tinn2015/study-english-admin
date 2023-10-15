@@ -1,6 +1,6 @@
 import { addLesson } from '@/utils/request/lesson';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, message, Modal, Select, Space, Upload } from 'antd';
+import { Button, Form, Input, message, Modal, Radio, Select, Space, Upload } from 'antd';
 import React, { useState } from 'react';
 
 const { TextArea } = Input;
@@ -28,6 +28,8 @@ const LessonModal: React.FC<Props> = ({ visible, setOpen, update }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [form] = Form.useForm();
+  // form.setFieldsValue({mode: 0})
+  const [robotUrlInputVisible, setRobotUrlInputVisible] = useState(false);
   console.log('lessonItem', visible);
 
   const handleOk = () => {
@@ -48,7 +50,7 @@ const LessonModal: React.FC<Props> = ({ visible, setOpen, update }) => {
 
   const onFinish = (values: any) => {
     console.log('onfinish', values);
-    if (values.img[0]) {
+    if (values.img && values.img[0]) {
       values.img = values.img[0].response.url;
     }
     addLesson(values).then(() => {
@@ -87,6 +89,19 @@ const LessonModal: React.FC<Props> = ({ visible, setOpen, update }) => {
     setFileList(newFileList);
   };
 
+  /**
+   * 课程类型切换
+   * @param val
+   */
+  const classModeChange = (e: any) => {
+    console.log('classModeChange', e);
+    if (e.target.value === 2) {
+      setRobotUrlInputVisible(true);
+    } else {
+      setRobotUrlInputVisible(false);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -103,6 +118,7 @@ const LessonModal: React.FC<Props> = ({ visible, setOpen, update }) => {
           layout="horizontal"
           style={{ maxWidth: 800 }}
           form={form}
+          initialValues={{ mode: 0 }}
           onFinish={onFinish}
         >
           <Form.Item
@@ -153,6 +169,25 @@ const LessonModal: React.FC<Props> = ({ visible, setOpen, update }) => {
               </div>
             </Upload>
           </Form.Item>
+          <Form.Item
+            label="课程类型"
+            name="mode"
+            rules={[{ required: true, message: '请选择课程类型' }]}
+          >
+            <Radio.Group onChange={classModeChange}>
+              <Radio value={0}>常规跟读</Radio>
+              <Radio value={2}>智能对话</Radio>
+            </Radio.Group>
+          </Form.Item>
+          {robotUrlInputVisible && (
+            <Form.Item
+              label="机器人地址"
+              name="robotUrl"
+              rules={[{ required: true, message: '请输入机器人地址' }]}
+            >
+              <Input placeholder="请输入机器人地址" />
+            </Form.Item>
+          )}
           <div style={{ fontSize: '14px', marginBottom: '20px', fontWeight: 600 }}>章节</div>
           <Form.Item>
             <Form.List name="sections">

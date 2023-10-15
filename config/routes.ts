@@ -42,6 +42,11 @@ export default [
         name: '课程列表',
         component: './Lessons',
       },
+      {
+        path: '/lessons/users',
+        name: '用户管理',
+        component: './UserManage',
+      },
     ],
   },
   // {
