@@ -19,8 +19,8 @@ const normFile = (e: any) => {
   return e?.fileList;
 };
 
-const isDev = process.env.NODE_ENV === 'development';
-const BaseUrl = isDev ? '/v2' : '/v1';
+const isDev = process.env.APP_ENV === 'development';
+const BaseUrl = isDev ? 'http://devapi.itso123.com:8091/v1' : '/v1';
 
 const Authorization = window.localStorage.getItem('authorization') || '';
 

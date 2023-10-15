@@ -1,8 +1,8 @@
 import { request } from '@umijs/max';
 import * as CryptoJS from 'crypto-js';
 
-const isDev = process.env.NODE_ENV === 'development';
-const BaseUrl = isDev ? '/v2' : '/v1';
+const isDev = process.env.APP_ENV === 'development';
+const BaseUrl = isDev ? 'http://devapi.itso123.com:8091/v1' : '/v1';
 
 /** 发送验证码 POST /api/login/captcha */
 export function login(
