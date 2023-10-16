@@ -1,9 +1,9 @@
 import request from '@/utils/request';
-import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import React, { useRef, useState } from 'react';
+import RecordPlayModal from './recordPlayModal/RecordPlayModal';
 
 type RowItem = {
   id: number;
@@ -19,8 +19,9 @@ type RowItem = {
 
 const UserTable: React.FC = () => {
   const [list, updateList] = useState<RowItem[]>([]);
-  const [page, updatePage] = useState<number>(0);
-  const [lessonModalVisible, setLessonModalVisible] = useState<boolean>(false);
+  const [page, updatePage] = useState<number>(1);
+  const [recordPlayModalVisible, setRecordPlayModalVisible] = useState<boolean>(false);
+  const [currentOpenId, setCurrentOpenId] = useState<string>('');
   const [sectionModalVisible, setSectionModalVisible] = useState<boolean>(false);
   const [translationModalVisible, setTranslationModalVisible] = useState<boolean>(false);
   const [currentSections, setCurrentSections] = useState<{ title: string; descript: string }[]>([]);
@@ -53,6 +54,15 @@ const UserTable: React.FC = () => {
   const pageChange = (num: number) => {
     console.log('pageChange', num);
     updatePage(num);
+  };
+
+  /**
+   * 打开播放弹框
+   */
+  const openRecordDialog = (record: any) => {
+    console.log('openRecordDialog', record);
+    setCurrentOpenId(record.openId);
+    setRecordPlayModalVisible(true);
   };
 
   const columns: ProColumns<RowItem>[] = [
@@ -133,69 +143,77 @@ const UserTable: React.FC = () => {
       title: '操作',
       valueType: 'option',
       key: 'option',
-      //   render: (text, record, _, action) => [
-      //     <a key="editable">编辑</a>
-      //   ],
+      render: (text, record, _, action) => [
+        <div key="record">
+          <Button
+            type="primary"
+            onClick={() => {
+              openRecordDialog(record);
+            }}
+          >
+            录音播放
+          </Button>
+        </div>,
+      ],
     },
   ];
 
   return (
-    // <PageContainer
-    //     pageSize={10}
-    //     onChange={pageChange}
-    // >
-    //   {
-
-    //   }
-    // </PageContainer>
-    <ProTable<RowItem>
-      rowKey="openId"
-      columns={columns}
-      // dataSource={list}
-      search={{
-        defaultCollapsed: false,
-      }}
-      // params={params}
-      request={async (
-        // 第一个参数 params 查询表单和 params 参数的结合
-        // 第一个参数中一定会有 pageSize 和  current ，这两个参数是 antd 的规范
-        params: T & {
-          pageSize: number;
-          current: number;
-        },
-        sort,
-        filter,
-      ) => {
-        // 这里需要返回一个 Promise,在返回之前你可以进行数据转化
-        // 如果需要转化参数可以在这里进行修改
-        const res = await request.getUserList(params);
-        return {
-          data: res.users,
-          // success 请返回 true，
-          // 不然 table 会停止解析数据，即使有数据
-          success: true,
-          // 不传会使用 data 的长度，如果是分页一定要传
-          total: 40,
-        };
-      }}
-      pagination={{
-        pageSize: 10,
-        onChange: pageChange,
-      }}
-      actionRef={actionRef}
-      toolBarRender={() => [
-        <Button
-          key="button"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            setLessonModalVisible(true);
-          }}
-          type="primary"
-        >
-          新建
-        </Button>,
-      ]}
-    ></ProTable>
+    <div>
+      <ProTable<RowItem>
+        rowKey="openId"
+        columns={columns}
+        // dataSource={list}
+        search={{
+          defaultCollapsed: false,
+        }}
+        // params={params}
+        request={async (
+          // 第一个参数 params 查询表单和 params 参数的结合
+          // 第一个参数中一定会有 pageSize 和  current ，这两个参数是 antd 的规范
+          params: T & {
+            pageSize: number;
+            current: number;
+          },
+          sort,
+          filter,
+        ) => {
+          // 这里需要返回一个 Promise,在返回之前你可以进行数据转化
+          // 如果需要转化参数可以在这里进行修改
+          const res = await request.getUserList({ page: params.current, size: params.pageSize });
+          return {
+            data: res.users,
+            // success 请返回 true，
+            // 不然 table 会停止解析数据，即使有数据
+            success: true,
+            // 不传会使用 data 的长度，如果是分页一定要传
+            total: res.total,
+          };
+        }}
+        pagination={{
+          pageSize: 15,
+          onChange: pageChange,
+        }}
+        actionRef={actionRef}
+        // toolBarRender={() => [
+        //     <Button
+        //     key="button"
+        //     icon={<PlusOutlined />}
+        //     onClick={() => {
+        //         // setLessonModalVisible(true);
+        //     }}
+        //     type="primary"
+        //     >
+        //     新建
+        //     </Button>,
+        // ]}
+      ></ProTable>
+      <RecordPlayModal
+        visible={recordPlayModalVisible}
+        openId={currentOpenId}
+        setOpen={setRecordPlayModalVisible}
+      ></RecordPlayModal>
+    </div>
   );
 };
 

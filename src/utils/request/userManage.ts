@@ -26,6 +26,29 @@ export function getUserList(
   });
 }
 
+/**
+ * 获取用户录音
+ * @param params
+ * @param options
+ * @returns
+ */
+export function getUserRecord(
+  params: {
+    page: number;
+    size: number;
+    openId: string;
+  },
+  options?: { [key: string]: any },
+) {
+  return request<API.Records>(BaseUrl + '/admin/analyse/query', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 // /**
 //  * 添加课程
 //  * @param params
