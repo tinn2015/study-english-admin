@@ -2,7 +2,7 @@ import request from '@/utils/request';
 import type { ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { Button, Input, Modal } from 'antd';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 const { TextArea } = Input;
 
@@ -25,13 +25,6 @@ type RowItem = {
   createTime: number;
 };
 
-const normFile = (e: any) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
-
 const isDev = process.env.APP_ENV === 'development';
 const BaseUrl = isDev ? 'http://devapi.itso123.com:8091/v1' : '/v1';
 
@@ -39,12 +32,21 @@ const Authorization = window.localStorage.getItem('authorization') || '';
 
 const RecordPlayModal: React.FC<Props> = ({ visible, openId, setOpen }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const audioRef = useRef(null);
+  const [audioSrc, setAudioSrc] = useState('');
 
   const handleOk = () => {
     setOpen(false);
   };
   const handleCancel = () => {
     setOpen(false);
+  };
+
+  const audioPlay = (data: any) => {
+    console.log(data, audioRef.current);
+    // setAudioSrc(data.recFile)
+    audioRef.current.src = data.recFile;
+    audioRef.current.play();
   };
 
   const columns: ProColumns<RowItem>[] = [
@@ -105,7 +107,12 @@ const RecordPlayModal: React.FC<Props> = ({ visible, openId, setOpen }) => {
       key: 'option',
       render: (text, record, _, action) => [
         <div key="record">
-          <Button type="primary" onClick={() => {}}>
+          <Button
+            type="primary"
+            onClick={() => {
+              audioPlay(record);
+            }}
+          >
             录音播放
           </Button>
         </div>,
@@ -174,6 +181,7 @@ const RecordPlayModal: React.FC<Props> = ({ visible, openId, setOpen }) => {
           //     </Button>,
           // ]}
         ></ProTable>
+        <audio src={audioSrc} ref={audioRef}></audio>
       </Modal>
     </>
   );
