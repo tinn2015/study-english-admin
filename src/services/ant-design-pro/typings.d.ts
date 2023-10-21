@@ -101,7 +101,7 @@ declare namespace API {
 
   type Users = {
     users: any[];
-    total: number;
+    Total: number;
   };
 
   type Records = {
