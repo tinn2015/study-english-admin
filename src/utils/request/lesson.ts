@@ -110,3 +110,13 @@ export function genTtsCn(id: number) {
     },
   });
 }
+
+/**
+ * 获取历史课程分析
+ * @returns
+ */
+export function getLessonAnalyse() {
+  return request(`${BaseUrl}/admin/lesson/history/analyse`, {
+    method: 'POST',
+  });
+}

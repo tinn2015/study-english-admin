@@ -47,6 +47,11 @@ export default [
         name: '用户管理',
         component: './UserManage',
       },
+      {
+        path: '/lessons/analysis',
+        name: '历史课程分析',
+        component: './LessonAnalysis',
+      },
     ],
   },
   // {
