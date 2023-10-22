@@ -161,7 +161,7 @@ const RecordPlayModal: React.FC<Props> = ({ visible, openId, setOpen }) => {
               // 不然 table 会停止解析数据，即使有数据
               success: true,
               // 不传会使用 data 的长度，如果是分页一定要传
-              total: res.Total,
+              total: res.total,
             };
           }}
           pagination={{

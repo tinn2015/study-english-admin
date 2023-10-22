@@ -101,11 +101,11 @@ declare namespace API {
 
   type Users = {
     users: any[];
-    Total: number;
+    total: number;
   };
 
   type Records = {
     analyses: any[];
-    Total: number;
+    total: number;
   };
 }
