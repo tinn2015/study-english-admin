@@ -49,10 +49,13 @@ const LessonModal: React.FC<Props> = ({ visible, setOpen, update }) => {
   };
 
   const onFinish = (values: any) => {
-    console.log('onfinish', values);
     if (values.img && values.img[0]) {
       values.img = values.img[0].response.url;
     }
+    if (values.descript) {
+      values.descript = values.descript.replace(/\n|\r\n/g, '#');
+    }
+    console.log('onfinish', values);
     addLesson(values).then(() => {
       setOpen(false);
       setConfirmLoading(false);
@@ -133,7 +136,7 @@ const LessonModal: React.FC<Props> = ({ visible, setOpen, update }) => {
             name="descript"
             rules={[{ required: true, message: '请输入课程描述' }]}
           >
-            <TextArea rows={2} />
+            <TextArea rows={6} />
           </Form.Item>
           <Form.Item
             label="分类"
